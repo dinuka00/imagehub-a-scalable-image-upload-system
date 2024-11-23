@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 @Entity
@@ -15,6 +17,10 @@ public class User {
     private Long id;
 
     private String email;
+
+    private String firstName;
+
+    private String lastName;
 
     private String password;
 }

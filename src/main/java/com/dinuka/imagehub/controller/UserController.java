@@ -1,5 +1,6 @@
 package com.dinuka.imagehub.controller;
 
+import com.dinuka.imagehub.dto.UserDTO;
 import com.dinuka.imagehub.entity.User;
 import com.dinuka.imagehub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,12 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/user")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@RequestBody UserDTO user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable Long id) {
+    public ResponseEntity<User> updateUser(@RequestBody UserDTO user, @PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.update(user, id));
     }
 

@@ -1,5 +1,6 @@
 package com.dinuka.imagehub.serviceImpl;
 
+import com.dinuka.imagehub.dto.UserDTO;
 import com.dinuka.imagehub.entity.User;
 import com.dinuka.imagehub.repository.UserRepository;
 import com.dinuka.imagehub.service.UserService;
@@ -25,18 +26,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(User user) {
-        return userRepository.save(user);
+    public User save(UserDTO user) {
+
+        User newUser = new User();
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(user.getPassword());
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+
+        return userRepository.save(newUser);
     }
 
     @Override
-    public User update(User user, Long id) {
+    public User update(UserDTO user, Long id) {
 
         User existingUser = userRepository.findById(id).orElse(null);
 
         if(existingUser != null) {
             existingUser.setEmail(user.getEmail());
-            existingUser.setPassword(user.getPassword());
+            existingUser.setFirstName(user.getFirstName());
+            existingUser.setLastName(user.getLastName());
 
             return userRepository.save(existingUser);
         }else{
@@ -52,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
         if(existingUser != null) {
             userRepository.delete(existingUser);
-            
+
             return "user deleted";
         }
         return null;
