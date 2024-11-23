@@ -30,9 +30,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User user) {
+    public User update(User user, Long id) {
 
-        User existingUser = userRepository.findById(user.getId()).orElse(null);
+        User existingUser = userRepository.findById(id).orElse(null);
 
         if(existingUser != null) {
             existingUser.setEmail(user.getEmail());
@@ -46,7 +46,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) {
+    public String delete(Long id) {
 
+        User existingUser = userRepository.findById(id).orElse(null);
+
+        if(existingUser != null) {
+            userRepository.delete(existingUser);
+            
+            return "user deleted";
+        }
+        return null;
     }
 }
