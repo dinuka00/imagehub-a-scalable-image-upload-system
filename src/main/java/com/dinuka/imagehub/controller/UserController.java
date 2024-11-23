@@ -3,14 +3,17 @@ package com.dinuka.imagehub.controller;
 import com.dinuka.imagehub.dto.UserDTO;
 import com.dinuka.imagehub.entity.User;
 import com.dinuka.imagehub.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Validated
 public class UserController {
 
     @Autowired

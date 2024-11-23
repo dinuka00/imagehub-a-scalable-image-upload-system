@@ -28,6 +28,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(UserDTO user) {
 
+        //User existinUser = userRepository.findByEmail(user.getEmail());
+
         User newUser = new User();
         newUser.setEmail(user.getEmail());
         newUser.setPassword(user.getPassword());
@@ -35,6 +37,14 @@ public class UserServiceImpl implements UserService {
         newUser.setLastName(user.getLastName());
 
         return userRepository.save(newUser);
+
+//        if (existinUser != null) {
+//            return existinUser;
+//        }else {
+//
+//
+//        }
+
     }
 
     @Override
