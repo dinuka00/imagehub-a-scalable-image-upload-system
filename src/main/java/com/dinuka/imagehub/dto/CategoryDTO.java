@@ -3,7 +3,7 @@ package com.dinuka.imagehub.dto;
 import lombok.Data;
 
 @Data
-public class CetegoryDTO {
+public class CategoryDTO {
 
     private String name;
 
