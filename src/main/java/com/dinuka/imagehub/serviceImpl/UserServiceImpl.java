@@ -28,22 +28,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(UserDTO user) {
 
-        //User existinUser = userRepository.findByEmail(user.getEmail());
+        User existinUser = userRepository.findByEmail(user.getEmail());
 
-        User newUser = new User();
-        newUser.setEmail(user.getEmail());
-        newUser.setPassword(user.getPassword());
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
+        if (existinUser != null) {
+            return existinUser;
 
-        return userRepository.save(newUser);
+        }else {
 
-//        if (existinUser != null) {
-//            return existinUser;
-//        }else {
-//
-//
-//        }
+            User newUser = new User();
+            newUser.setEmail(user.getEmail());
+            newUser.setPassword(user.getPassword());
+            newUser.setFirstName(user.getFirstName());
+            newUser.setLastName(user.getLastName());
+
+            return userRepository.save(newUser);
+
+        }
 
     }
 
