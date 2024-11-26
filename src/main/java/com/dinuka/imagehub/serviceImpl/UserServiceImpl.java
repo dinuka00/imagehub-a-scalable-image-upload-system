@@ -35,11 +35,18 @@ public class UserServiceImpl implements UserService {
 
         }else {
 
-            User newUser = new User();
-            newUser.setEmail(user.getEmail());
-            newUser.setPassword(user.getPassword());
-            newUser.setFirstName(user.getFirstName());
-            newUser.setLastName(user.getLastName());
+             User newUser = User.builder()
+                     .email(user.getEmail())
+                     .password(user.getPassword())
+                     .firstName(user.getFirstName())
+                     .lastName(user.getLastName())
+                     .build();
+
+//            User newUser = new User();
+//            newUser.setEmail(user.getEmail());
+//            newUser.setPassword(user.getPassword());
+//            newUser.setFirstName(user.getFirstName());
+//            newUser.setLastName(user.getLastName());
 
             return userRepository.save(newUser);
 
