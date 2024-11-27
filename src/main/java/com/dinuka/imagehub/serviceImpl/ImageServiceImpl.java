@@ -3,8 +3,10 @@ package com.dinuka.imagehub.serviceImpl;
 import com.dinuka.imagehub.dto.ImageDTO;
 import com.dinuka.imagehub.entity.Category;
 import com.dinuka.imagehub.entity.Image;
+import com.dinuka.imagehub.entity.User;
 import com.dinuka.imagehub.repository.CategoryRepository;
 import com.dinuka.imagehub.repository.ImageRepository;
+import com.dinuka.imagehub.repository.UserRepository;
 import com.dinuka.imagehub.service.ImageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,12 @@ public class ImageServiceImpl implements ImageService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private static final String upload_Dir = "D:/Projects/imagehub/upload";
+
+
 
     @Override
     public List<Image> findAll() {
@@ -35,7 +42,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Object save(MultipartFile file, Integer categoryId)  throws NullPointerException {
+    public Object save(MultipartFile file, Integer categoryId, Long userId)  throws NullPointerException {
 
        try {
 
@@ -65,13 +72,17 @@ public class ImageServiceImpl implements ImageService {
 
            String fileUrl = "/uploads/" + fileName;
 
+           User existingUser = userRepository.findById(userId).orElse(null);
+
            Image image = Image.builder()
                    .name(fileName)
                    .url(fileUrl)
                    .size(fileSizeInKB)
                    .type(fileType)
                    .category(existingCategory)
+                   .user(existingUser)
                    .build();
+
 
            return imageRepository.save(image);
 

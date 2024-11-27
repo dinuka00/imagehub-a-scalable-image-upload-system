@@ -10,7 +10,7 @@ public interface ImageService {
 
     List<Image>  findAll();
 
-    Object save(MultipartFile file, Integer categoryId) ;
+    Object save(MultipartFile file, Integer categoryId, Long userId) ;
 
     Object update(ImageDTO image, Long id);
 

@@ -19,10 +19,10 @@ public class ImageController {
 
     @PostMapping("/images")
     public ResponseEntity<Object> uploadImage(@RequestParam("file") MultipartFile file,
-                                             @RequestParam(value = "categoryId", required = false)
-                                             Integer categoryId) {
+                                             @RequestParam(value = "categoryId", required = false) Integer categoryId,
+                                              @RequestParam(value = "userId",required = true) Long userId) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(imageService.save(file, categoryId));
+            return ResponseEntity.status(HttpStatus.CREATED).body(imageService.save(file, categoryId, userId));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
