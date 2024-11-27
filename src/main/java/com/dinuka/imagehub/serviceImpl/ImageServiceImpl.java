@@ -1,5 +1,6 @@
 package com.dinuka.imagehub.serviceImpl;
 
+import com.dinuka.imagehub.dto.ImageDTO;
 import com.dinuka.imagehub.entity.Category;
 import com.dinuka.imagehub.entity.Image;
 import com.dinuka.imagehub.repository.CategoryRepository;
@@ -34,26 +35,22 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Object save(MultipartFile file, Integer categoryId)  {
+    public Object save(MultipartFile file, Integer categoryId)  throws NullPointerException {
 
        try {
 
            String mainFileType = file.getContentType();
 
+           assert mainFileType != null;
            String fileType = mainFileType.split("/")[1];
 
-           Long fileSizeInBytes = file.getSize();
+           long fileSizeInBytes = file.getSize();
 
-           Double fileSizeInKB = fileSizeInBytes / 1024.0;
+           double fileSizeInKB = fileSizeInBytes / 1024.0;
 
            fileSizeInKB = Math.round(fileSizeInKB * 100.0) / 100.0;
 
-           Category existingCategory = categoryRepository.findById(categoryId).get();
-
-           if(existingCategory == null) {
-               categoryId = null;
-           }
-
+           Category existingCategory = categoryRepository.findById(categoryId).orElse(null);
 
            File directory = new File(upload_Dir);
            if (!directory.exists()) {
@@ -84,9 +81,16 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Object update(Image image) {
+    public Object update(ImageDTO image, Long id) {
 
-        return null;
+        Image existingImage = imageRepository.findById(id).orElse(null);
+
+        if(image.getName() != null){
+            existingImage.setName(image.getName());
+        }
+
+        return imageRepository.save(existingImage);
+
     }
 
     @Override
@@ -96,6 +100,10 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public String deleteById(Long id) {
-        return "";
+
+        imageRepository.deleteById(id);
+
+        return "Image deleted";
+
     }
 }

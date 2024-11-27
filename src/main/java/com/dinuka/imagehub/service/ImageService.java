@@ -1,5 +1,6 @@
 package com.dinuka.imagehub.service;
 
+import com.dinuka.imagehub.dto.ImageDTO;
 import com.dinuka.imagehub.entity.Image;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,7 +12,7 @@ public interface ImageService {
 
     Object save(MultipartFile file, Integer categoryId) ;
 
-    Object update(Image image);
+    Object update(ImageDTO image, Long id);
 
     Image findById(Long id);
 
