@@ -1,5 +1,7 @@
 package com.dinuka.imagehub.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,6 +47,8 @@ public class Image {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonProperty("userId")
+    @JsonIgnoreProperties({"password", "email", "role", "createdAt", "updatedAt"})
     private User user;
 
 }
