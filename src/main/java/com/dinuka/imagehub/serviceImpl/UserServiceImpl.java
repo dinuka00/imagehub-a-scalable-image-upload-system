@@ -2,6 +2,7 @@ package com.dinuka.imagehub.serviceImpl;
 
 import com.dinuka.imagehub.dto.UserDTO;
 import com.dinuka.imagehub.entity.User;
+import com.dinuka.imagehub.exceptions.UserNotFoundException;
 import com.dinuka.imagehub.repository.UserRepository;
 import com.dinuka.imagehub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id: "+ id));
     }
 
     @Override
@@ -42,12 +43,6 @@ public class UserServiceImpl implements UserService {
                      .lastName(user.getLastName())
                      .build();
 
-//            User newUser = new User();
-//            newUser.setEmail(user.getEmail());
-//            newUser.setPassword(user.getPassword());
-//            newUser.setFirstName(user.getFirstName());
-//            newUser.setLastName(user.getLastName());
-
             return userRepository.save(newUser);
 
         }
@@ -57,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(UserDTO user, Long id) {
 
-        User existingUser = userRepository.findById(id).orElse(null);
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id: "+ id));
 
         if(existingUser != null) {
             existingUser.setEmail(user.getEmail());
@@ -65,16 +60,15 @@ public class UserServiceImpl implements UserService {
             existingUser.setLastName(user.getLastName());
 
             return userRepository.save(existingUser);
-        }else{
-            return null;
         }
+        return null;
 
     }
 
     @Override
     public String delete(Long id) {
 
-        User existingUser = userRepository.findById(id).orElse(null);
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id: "+ id));
 
         if(existingUser != null) {
             userRepository.delete(existingUser);
