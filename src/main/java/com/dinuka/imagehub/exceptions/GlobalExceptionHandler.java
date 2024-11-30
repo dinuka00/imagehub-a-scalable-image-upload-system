@@ -16,6 +16,11 @@ public class GlobalExceptionHandler {
         return createProblemDetail(HttpStatus.NOT_FOUND, e.getMessage(), "An user was not found.");
     }
 
+    @ExceptionHandler(ImageNotFoundException.class)
+    public ProblemDetail handleImageNotFoundException(ImageNotFoundException e) {
+        return createProblemDetail(HttpStatus.NOT_FOUND, e.getMessage(), "An image was not found.");
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ProblemDetail handleRuntimeException(RuntimeException e) {
         log.error("Runtime exception occurred", e);

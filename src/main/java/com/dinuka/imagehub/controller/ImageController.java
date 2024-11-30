@@ -14,55 +14,35 @@ import java.util.List;
 @RestController
 public class ImageController {
 
+
     @Autowired
     private ImageService imageService;
 
     @PostMapping("/images")
     public ResponseEntity<Object> uploadImage(@RequestParam("file") MultipartFile file,
                                              @RequestParam(value = "categoryId", required = false) Integer categoryId,
-                                              @RequestParam(value = "userId",required = true) Long userId) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(imageService.save(file, categoryId, userId));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+                                              @RequestParam(value = "userId") Long userId) {
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(imageService.save(file, categoryId, userId));
     }
 
     @PutMapping("/images/{id}")
     public ResponseEntity<Object> updateImage(@RequestBody ImageDTO imageDTO, @PathVariable Long id) {
-
-        try{
-            return ResponseEntity.status(HttpStatus.OK).body(imageService.update(imageDTO,id));
-        }catch(Exception e){
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(imageService.update(imageDTO,id));
     }
 
     @GetMapping("/image/{id}")
     public ResponseEntity<Image> getImage(@PathVariable Long id) {
-
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(imageService.findById(id));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(imageService.findById(id));
     }
 
     @GetMapping("/images")
     public ResponseEntity<List<Image>> getImages() {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(imageService.findAll());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(imageService.findAll());
     }
 
     @DeleteMapping("/image/{id}")
     public ResponseEntity<String> deleteImage(@PathVariable Long id) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(imageService.deleteById(id));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(imageService.deleteById(id));
     }
 }

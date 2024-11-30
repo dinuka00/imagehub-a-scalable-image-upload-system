@@ -4,6 +4,8 @@ import com.dinuka.imagehub.dto.ImageDTO;
 import com.dinuka.imagehub.entity.Category;
 import com.dinuka.imagehub.entity.Image;
 import com.dinuka.imagehub.entity.User;
+import com.dinuka.imagehub.exceptions.ImageNotFoundException;
+import com.dinuka.imagehub.exceptions.UserNotFoundException;
 import com.dinuka.imagehub.repository.CategoryRepository;
 import com.dinuka.imagehub.repository.ImageRepository;
 import com.dinuka.imagehub.repository.UserRepository;
@@ -72,7 +74,9 @@ public class ImageServiceImpl implements ImageService {
 
            String fileUrl = "/uploads/" + fileName;
 
-           User existingUser = userRepository.findById(userId).orElse(null);
+           User existingUser = userRepository.findById(userId).orElseThrow(
+                   () -> new UserNotFoundException("User not found with id: "+ userId)
+           );
 
            Image image = Image.builder()
                    .name(fileName)
@@ -94,7 +98,8 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Object update(ImageDTO image, Long id) {
 
-        Image existingImage = imageRepository.findById(id).orElse(null);
+        Image existingImage = imageRepository.findById(id).orElseThrow(
+                () -> new ImageNotFoundException("Image not found with id: "+ id));
 
         if(image.getName() != null){
             existingImage.setName(image.getName());
@@ -106,15 +111,25 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Image findById(Long id) {
-        return imageRepository.findById(id).orElse(null);
+        return imageRepository.findById(id).orElseThrow(
+                () -> new ImageNotFoundException("Image not found with id: "+ id)
+        );
     }
 
     @Override
     public String deleteById(Long id) {
 
-        imageRepository.deleteById(id);
+        Image image = imageRepository.findById(id).orElseThrow(
+                () -> new ImageNotFoundException("Image not found with id: "+ id)
+        );
 
-        return "Image deleted";
+        if(image != null){
+            imageRepository.deleteById(id);
 
+            return "Image deleted";
+        }else {
+            return "Image not found";
+        }
+        
     }
 }
