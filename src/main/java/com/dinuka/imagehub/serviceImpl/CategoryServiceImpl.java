@@ -1,6 +1,7 @@
 package com.dinuka.imagehub.serviceImpl;
 import com.dinuka.imagehub.dto.CategoryDTO;
 import com.dinuka.imagehub.entity.Category;
+import com.dinuka.imagehub.exceptions.CategoryNotFoundException;
 import com.dinuka.imagehub.repository.CategoryRepository;
 import com.dinuka.imagehub.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findById(Integer id) {
-        return categoryRepository.findById(id).orElse(null);
+        return categoryRepository.findById(id).orElseThrow(
+                () -> new CategoryNotFoundException("Category not found with id: "+ id)
+        );
     }
 
     @Override
@@ -43,7 +46,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Object update(CategoryDTO categoryDto, Integer id) {
 
-        Category existingCategory = categoryRepository.findById(id).orElse(null);
+        Category existingCategory = categoryRepository.findById(id).orElseThrow(
+                () -> new CategoryNotFoundException("Category not found with id: "+ id)
+        );
 
         if(existingCategory != null) {
 
