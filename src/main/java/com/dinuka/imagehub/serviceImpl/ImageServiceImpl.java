@@ -130,6 +130,6 @@ public class ImageServiceImpl implements ImageService {
         }else {
             return "Image not found";
         }
-        
+
     }
 }

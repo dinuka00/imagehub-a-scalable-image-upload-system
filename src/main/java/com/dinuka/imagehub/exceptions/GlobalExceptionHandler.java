@@ -1,7 +1,6 @@
 package com.dinuka.imagehub.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +14,12 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleUserNotFoundException(UserNotFoundException e) {
         return createProblemDetail(HttpStatus.NOT_FOUND, e.getMessage(), "An user was not found.");
     }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ProblemDetail handleCategoryNotFoundException(CategoryNotFoundException e) {
+        return createProblemDetail(HttpStatus.NOT_FOUND, e.getMessage(), "Category was not found.");
+    }
+
 
     @ExceptionHandler(ImageNotFoundException.class)
     public ProblemDetail handleImageNotFoundException(ImageNotFoundException e) {
