@@ -6,6 +6,7 @@ import com.dinuka.imagehub.exceptions.UserNotFoundException;
 import com.dinuka.imagehub.repository.UserRepository;
 import com.dinuka.imagehub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @Override
     public List<User> findAll() {
@@ -38,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
              User newUser = User.builder()
                      .email(user.getEmail())
-                     .password(user.getPassword())
+                     .password(encoder.encode(user.getPassword()))
                      .firstName(user.getFirstName())
                      .lastName(user.getLastName())
                      .build();
