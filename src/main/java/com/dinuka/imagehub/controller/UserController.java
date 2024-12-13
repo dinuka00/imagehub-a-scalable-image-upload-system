@@ -1,14 +1,19 @@
 package com.dinuka.imagehub.controller;
 
 import com.dinuka.imagehub.dto.UserDTO;
+import com.dinuka.imagehub.dto.UserLoginDTO;
 import com.dinuka.imagehub.entity.User;
 import com.dinuka.imagehub.exceptions.UserNotFoundException;
 import com.dinuka.imagehub.service.UserService;
+import com.dinuka.imagehub.serviceImpl.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +27,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
 
     @PostMapping("/user")
     public ResponseEntity<User> createUser(@RequestBody UserDTO user) {
@@ -52,6 +63,20 @@ public class UserController {
     @GetMapping("/test-runtime")
     public void testRuntime() {
         throw new RuntimeException("Testing runtime exception");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody UserLoginDTO userLogin) {
+
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()));
+
+        if (authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.OK).body(jwtService.generateToken(userLogin.getEmail()));
+        }else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed!");
+        }
+
     }
 
 }
