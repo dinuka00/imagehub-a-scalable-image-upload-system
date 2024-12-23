@@ -34,7 +34,7 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
-    @PostMapping("/user")
+    @PostMapping("/user/create")
     public ResponseEntity<User> createUser(@RequestBody UserDTO user) {
             return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
@@ -65,7 +65,7 @@ public class UserController {
         throw new RuntimeException("Testing runtime exception");
     }
 
-    @PostMapping("/login")
+    @PostMapping("/user/login")
     public ResponseEntity<String> loginUser(@RequestBody UserLoginDTO userLogin) {
 
         Authentication authentication = authenticationManager
