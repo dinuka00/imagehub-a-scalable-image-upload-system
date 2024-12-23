@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -48,31 +49,37 @@ public class ImageServiceImpl implements ImageService {
 
        try {
 
-           String mainFileType = file.getContentType();
+            String fileType = getFileType(file);
 
-           assert mainFileType != null;
-           String fileType = mainFileType.split("/")[1];
+            double fileSizeInKB = Math.round(file.getSize() / 1024.0 * 100.0)*100.0;
 
-           long fileSizeInBytes = file.getSize();
+//           String mainFileType = file.getContentType();
 
-           double fileSizeInKB = fileSizeInBytes / 1024.0;
+//           assert mainFileType != null;
+//           String fileType = mainFileType.split("/")[1];
 
-           fileSizeInKB = Math.round(fileSizeInKB * 100.0) / 100.0;
+//           long fileSizeInBytes = file.getSize();
+//
+//           double fileSizeInKB = fileSizeInBytes / 1024.0;
+//
+//           fileSizeInKB = Math.round(fileSizeInKB * 100.0) / 100.0;
 
            Category existingCategory = categoryRepository.findById(categoryId).orElse(null);
 
-           File directory = new File(upload_Dir);
-           if (!directory.exists()) {
-               directory.mkdirs();
-           }
+//           File directory = new File(upload_Dir);
+//           if (!directory.exists()) {
+//               directory.mkdirs();
+//           }
 
-           String fileName = System.currentTimeMillis() + UUID.randomUUID().toString();
+           String fileName = System.currentTimeMillis() + UUID.randomUUID().toString()+"."+fileType;
 
-           Path path = Paths.get(upload_Dir + fileName);
+           String fileUrl = saveFileToLocalDirectory(file, fileName, fileType);
 
-           file.transferTo(path.toFile());
-
-           String fileUrl = "/uploads/" + fileName;
+//           Path path = Paths.get(upload_Dir + fileName);
+//
+//           file.transferTo(path.toFile());
+//
+//           String fileUrl = "/uploads/" + fileName;
 
            User existingUser = userRepository.findById(userId).orElseThrow(
                    () -> new UserNotFoundException("User not found with id: "+ userId)
@@ -94,6 +101,29 @@ public class ImageServiceImpl implements ImageService {
            throw new RuntimeException(e);
        }
     }
+
+    private String saveFileToLocalDirectory(MultipartFile file, String fileName, String fileType) throws IOException {
+
+        File directory = new File(upload_Dir);
+        if(!directory.exists()){
+            directory.mkdirs();
+        }
+
+        Path path = Paths.get(upload_Dir + fileName);
+        file.transferTo(path.toFile());
+
+        return "/uploads/"+fileName;
+    }
+
+    private String getFileType(MultipartFile file) {
+
+        if(file == null || file.getContentType() == null){
+            throw new IllegalArgumentException("Invalid file.add valid file");
+        }
+
+        return file.getContentType().split("/")[1];
+    }
+
 
     @Override
     public Object update(ImageDTO image, Long id) {
