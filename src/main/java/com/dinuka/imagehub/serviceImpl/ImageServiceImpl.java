@@ -14,6 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +40,8 @@ public class ImageServiceImpl implements ImageService {
     private UserRepository userRepository;
 
     private static final String upload_Dir = "D:/Projects/imagehub/upload";
-
+    @Autowired
+    private S3Client s3Client;
 
 
     @Override
@@ -53,33 +58,16 @@ public class ImageServiceImpl implements ImageService {
 
             double fileSizeInKB = Math.round(file.getSize() / 1024.0 * 100.0)*100.0;
 
-//           String mainFileType = file.getContentType();
-
-//           assert mainFileType != null;
-//           String fileType = mainFileType.split("/")[1];
-
-//           long fileSizeInBytes = file.getSize();
-//
-//           double fileSizeInKB = fileSizeInBytes / 1024.0;
-//
-//           fileSizeInKB = Math.round(fileSizeInKB * 100.0) / 100.0;
 
            Category existingCategory = categoryRepository.findById(categoryId).orElse(null);
 
-//           File directory = new File(upload_Dir);
-//           if (!directory.exists()) {
-//               directory.mkdirs();
-//           }
 
            String fileName = System.currentTimeMillis() + UUID.randomUUID().toString()+"."+fileType;
 
-           String fileUrl = saveFileToLocalDirectory(file, fileName, fileType);
+         //  String fileUrl = saveFileToLocalDirectory(file, fileName, fileType);
 
-//           Path path = Paths.get(upload_Dir + fileName);
-//
-//           file.transferTo(path.toFile());
-//
-//           String fileUrl = "/uploads/" + fileName;
+           String fileUrl = uploadToS3Bucket(file, fileName);
+
 
            User existingUser = userRepository.findById(userId).orElseThrow(
                    () -> new UserNotFoundException("User not found with id: "+ userId)
@@ -100,6 +88,28 @@ public class ImageServiceImpl implements ImageService {
        } catch (Exception e) {
            throw new RuntimeException(e);
        }
+    }
+
+    private String uploadToS3Bucket(MultipartFile file, String fileName) throws IOException {
+
+        String bucketName = "dinuka-img-proj";
+
+        String region = "ap-south-1";
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .contentType(file.getContentType())
+                .build();
+
+        PutObjectResponse putObjectResponse = s3Client.putObject(
+                putObjectRequest,
+                RequestBody.fromInputStream(file.getInputStream(), file.getSize())
+        );
+
+        return "https://"+ bucketName+".s3."+region+ ".amazonaws.com/"+fileName;
+
+
     }
 
     private String saveFileToLocalDirectory(MultipartFile file, String fileName, String fileType) throws IOException {
