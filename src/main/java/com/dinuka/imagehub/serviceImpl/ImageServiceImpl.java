@@ -163,6 +163,8 @@ public class ImageServiceImpl implements ImageService {
                 () -> new ImageNotFoundException("Image not found with id: "+ id)
         );
 
+        deleteFileFromS3(image.getName());
+
         if(image != null){
             imageRepository.deleteById(id);
 
@@ -171,5 +173,16 @@ public class ImageServiceImpl implements ImageService {
             return "Image not found";
         }
 
+    }
+
+    private void deleteFileFromS3(String name) {
+
+        String bucketName = "dinuka-img-proj";
+
+        try{
+            s3Client.deleteObject(builder -> builder.bucket(bucketName).key(name));
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting file from s3 bucket", e);
+        }
     }
 }

@@ -22,6 +22,7 @@ import java.util.List;
 
 @RestController
 @Validated
+@CrossOrigin(origins = "*")
 //@RequestMapping("/api")
 public class UserController {
 
@@ -77,6 +78,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed!");
         }
 
+    }
+
+    @GetMapping("/health")
+    public String healthCheck(){
+        return "OK";
     }
 
 }
